@@ -8,23 +8,23 @@ function Chat({ socket, username, room }) {
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: room,
+        company: "royke",
         author: username,
-        message: currentMessage,
+        status: currentMessage,
         time:
           new Date(Date.now()).getHours() +
           ":" +
           new Date(Date.now()).getMinutes(),
       };
 
-      await socket.emit("send_message", messageData);
+      await socket.emit("client_update", messageData);
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
     }
   };
 
   useEffect(() => {
-    socket.on("receive_message", (data) => {
+    socket.on("server_update", (data) => {
       setMessageList((list) => [...list, data]);
     });
   }, [socket]);
@@ -44,7 +44,7 @@ function Chat({ socket, username, room }) {
               >
                 <div>
                   <div className="message-content">
-                    <p>{messageContent.message}</p>
+                    <p>{messageContent.status}</p>
                   </div>
                   <div className="message-meta">
                     <p id="time">{messageContent.time}</p>
