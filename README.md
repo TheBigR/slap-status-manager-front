@@ -7,7 +7,7 @@ This app connects to a back end (repo: ) on port 3001.
 front end repo: is running on port 3000.
 
 please advise -
-back-end must be up and running before running this app.
+<b> back-end must be up and running before running this app. </b>
 
 steps for running:
 
