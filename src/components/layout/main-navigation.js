@@ -5,7 +5,6 @@ import SocketContext from "../../store/socket-context";
 import classes from "./main-navigation.module.css";
 
 function ButtonHandler(props) {
-  console.log(props);
   if (props.socket.userName === "Guest") {
     return (
       <div>

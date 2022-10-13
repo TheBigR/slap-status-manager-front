@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useContext, useRef } from "react";
 import Card from "../components/ui/card";
 import SocketContext from "../store/socket-context";
@@ -7,11 +8,13 @@ import classes from "./login-page.module.css";
 function LoginPage() {
   const SocketCtx = useContext(SocketContext);
   const nameInputRef = useRef();
+  const navigate = useNavigate();
 
   function submitHandler(event) {
     event.preventDefault();
-    const enteredName = nameInputRef.current.value;    
+    const enteredName = nameInputRef.current.value;
     SocketCtx.updateCurrentUser(enteredName);
+    navigate("/status");
   }
 
   if (SocketCtx.userName !== "Guest") {

@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import io from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 
 const socket = io.connect("http://localhost:3001");
 
@@ -34,8 +35,20 @@ export function SocketContextProvider(props) {
 
   function getStatusHandler() {}
 
-  function updateUserStatusHandler(userUpdate) {
-    console.log("context recieved the update status of: ", userUpdate);
+  async function updateUserStatusHandler(userUpdate) {
+    const userUuid = uuidv4();
+    const messageData = {
+      company: company,
+      author: currentUser,
+      status: userUpdate,
+      uuid: userUuid,
+    };
+
+    await socket.emit("client_update", messageData);
+    console.log(
+      "context recieved the update status of: ",
+      userUpdate + userUuid
+    );
   }
 
   const context = {
