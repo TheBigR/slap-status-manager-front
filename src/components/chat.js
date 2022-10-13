@@ -24,7 +24,8 @@ function Chat({ socket, username, room }) {
   };
 
   useEffect(() => {
-    socket.on("server_update", (data) => {
+    console.log("socket is working");
+    socket.on("receive_message", (data) => {
       setMessageList((list) => [...list, data]);
     });
   }, [socket]);

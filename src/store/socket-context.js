@@ -1,8 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-
-const socket = io.connect("http://localhost:3001");
 
 const company = "demoCompany";
 
@@ -16,14 +13,33 @@ const SocketContext = createContext({
 });
 
 export function SocketContextProvider(props) {
+  const socket = props.socket;
   const [currentUser, setCurrentUser] = useState("Guest");
   const [status, setStatus] = useState([]);
+
+  function parseResp(data) {
+    let currentStatus = [];
+    Object.keys(data).forEach((stat) => {
+      currentStatus.push({
+        name: stat,
+        key: data[stat].uuid,
+        status: data[stat].status,
+      });
+    });
+    return currentStatus;
+  }
+
+  useEffect(() => {
+    socket.on("server_update", (data) => {
+      setStatus(parseResp(data));
+    });
+  }, [socket]);
 
   useEffect(() => {
     if (currentUser !== "Guest") {
       socket.emit("join_company", company);
     }
-  }, [currentUser]);
+  }, [currentUser, socket]);
 
   function updateCurrentUserHandler(user) {
     setCurrentUser(user);
@@ -33,22 +49,39 @@ export function SocketContextProvider(props) {
     setCurrentUser("Guest");
   }
 
-  function getStatusHandler() {}
+  async function getStatusHandler() {
+    const data = await (await fetch(`http://localhost:3001/latest`)).json();
+    setStatus(parseResp(data));
+  }
 
   async function updateUserStatusHandler(userUpdate) {
-    const userUuid = uuidv4();
     const messageData = {
       company: company,
       author: currentUser,
       status: userUpdate,
-      uuid: userUuid,
+      uuid: uuidv4(),
     };
-
     await socket.emit("client_update", messageData);
-    console.log(
-      "context recieved the update status of: ",
-      userUpdate + userUuid
-    );
+
+    const update = status.find((obj) => obj.name === currentUser);
+
+    console.log("existing user? ", update);
+    if (update) {
+      setStatus(
+        status.map((obj) => {
+          if (obj.name === currentUser) {
+            return { ...obj, status: userUpdate };
+          }
+
+          return obj;
+        })
+      );
+    } else {
+      setStatus([
+        ...status,
+        { name: currentUser, status: userUpdate, key: messageData.uuid },
+      ]);
+    }
   }
 
   const context = {

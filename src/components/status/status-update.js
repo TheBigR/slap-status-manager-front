@@ -6,7 +6,7 @@ function StatusUpdate(props) {
   function submitHandler(event) {
     event.preventDefault();
     const selectedStatus = statusInputRef.current.value;
-    props.update(selectedStatus);
+    props.update(selectedStatus);    
   }
   return (
     <form className={classes.form} onSubmit={submitHandler}>
