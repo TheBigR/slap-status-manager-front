@@ -19,8 +19,8 @@ export function SocketContextProvider(props) {
   const [status, setStatus] = useState([]);
 
   useEffect(() => {
-    if (currentUser !== "Guest") {      
-      socket.emit("join_company", company);      
+    if (currentUser !== "Guest") {
+      socket.emit("join_company", company);
     }
   }, [currentUser]);
 
@@ -34,7 +34,9 @@ export function SocketContextProvider(props) {
 
   function getStatusHandler() {}
 
-  function updateUserStatusHandler(userUpdate) {}
+  function updateUserStatusHandler(userUpdate) {
+    console.log("context recieved the update status of: ", userUpdate);
+  }
 
   const context = {
     userName: currentUser,

@@ -9,9 +9,9 @@ function ButtonHandler(props) {
   if (props.socket.userName === "Guest") {
     return (
       <div>
-        <a href="/login" className={classes.btn}>
+        <Link to="/login" className={classes.btn}>
           Login
-        </a>
+        </Link>
       </div>
     );
   } else {
